@@ -1,0 +1,44 @@
+---
+title: "likert Examples"
+author: "Jake Chanenson"
+date: "5/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(foreign)      
+library(ggplot2)      
+library(colorspace)   #better colors for ggplot
+library(tidyverse)    
+library(dplyr)
+library(RColorBrewer)
+library(grid)
+library(likert) # for creating a likert plot
+```
+
+## R Markdown
+
+
+
+## Using Pre-Surmized Data
+```{r}
+## Create df
+Item <- c("Oatmeal Raisin is The Best Type of Cookie", "Chocolate Chip is The Best Type of Cookie", "Snickerdoodle is The Best Type of Cookie")
+strong_disagree <- c(60, 20, 10)
+disagree <- c(7, 25, 47)
+neutral <- c(0,0,0)
+agree <- c(3, 15, 38)
+strong_agree  <- c(30, 40, 05)
+df <- data.frame(Item, strong_disagree, disagree, neutral, agree, strong_agree)
+
+## Rename Cols (for legend)
+df <- df  %>% 
+  rename("Strong Disagree" = strong_disagree,
+          "Disagree" = disagree,
+          "Agree" = agree,
+         "Strong Agree" = strong_agree)
+
+plot(likert(summary = df))
+```

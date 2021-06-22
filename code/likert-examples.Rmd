@@ -18,8 +18,16 @@ library(grid)
 library(likert) # for creating a likert plot
 ```
 
-## R Markdown
 
+## Usuing Long data
+```{r}
+load(file = "../data/sample-likert-data.rda") #our data, see likert-data-generation.Rmd for more info
+
+
+plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4] ), plot.percent.neutral=FALSE, legend.position="right")
+ggsave("../imgs/long_data.png", height = 3, width = 9, )
+
+```
 
 
 ## Using Pre-Surmized Data
@@ -40,5 +48,6 @@ df <- df  %>%
           "Agree" = agree,
          "Strong Agree" = strong_agree)
 
-plot(likert(summary = df))
+plot(likert(summary = df), plot.percent.neutral=FALSE, legend.position="right")
+ggsave("../imgs/ps_data.png", height = 3, width = 9)
 ```

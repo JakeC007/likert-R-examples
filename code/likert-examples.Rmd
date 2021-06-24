@@ -23,12 +23,23 @@ library(likert) # for creating a likert plot
 ```{r}
 load(file = "../data/sample-likert-data.rda") #our data, see likert-data-generation.Rmd for more info
 
+## Rename Cols
+dental_hyg  <- dental_hyg  %>% 
+  rename("How Often Respondents Use Mouth Wash" = mouth_wash,
+          "How Often Respondents Brush Their Teeth" = tooth_brush,
+          "How Often Respondents Use Floss" = floss)
 
-plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4] ), plot.percent.neutral=FALSE, legend.position="right")
-ggsave("../imgs/long_data.png", height = 3, width = 9, )
+## New df for not grouped
+dh <- dental_hyg %>% select(-age)
 
+## Not Grouped
+plot(likert(dh),legend.position="right")
+ggsave("../imgs/long_data.png", height = 3, width = 9)
+
+## Grouped
+plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4] ), legend.position="right")
+ggsave("../imgs/long_data_grouped.png", height = 3, width = 9)
 ```
-
 
 ## Using Pre-Surmized Data
 ```{r}
@@ -51,3 +62,118 @@ df <- df  %>%
 plot(likert(summary = df), plot.percent.neutral=FALSE, legend.position="right")
 ggsave("../imgs/ps_data.png", height = 3, width = 9)
 ```
+
+
+## Modifying The Image
+
+### Changing The Color Scheme and Color Ordering On The Graph
+```{r Better-Colors, message=F}
+load(file = "../data/sample-likert-data.rda") #our data, see likert-data-generation.Rmd for more info
+
+## Rename Cols
+dental_hyg  <- dental_hyg  %>% 
+  rename("How Often Respondents Use Mouth Wash" = mouth_wash,
+          "How Often Respondents Brush Their Teeth" = tooth_brush,
+          "How Often Respondents Use Floss" = floss)
+
+## New df for not grouped
+dh <- dental_hyg %>% select(-age)
+
+## Blue-Never, Red-Always
+plot(likert(dh), legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c( "Always", "Often", "Sometimes","Rarely", "Never")) #order and color the likert boxes
+ggsave("../imgs/color_b-r.png", height = 3, width = 9)
+
+## Red-Never, Blue-Always  
+plot(likert(dh), legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) #order and color the likert boxes
+ggsave("../imgs/color_r-b.png", height = 3, width = 9)
+```
+
+### Fix Legend
+```{r Legend-Reverse, message=F}
+## Red-Never, Blue-Always  
+plot(likert(dh), legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = FALSE)) #to reverse the order in the legend
+ggsave("../imgs/guide_r-b.png", height = 3, width = 9)
+
+## Red-Never, Blue-Always  
+plot(likert(dh), legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE)) #to reverse the order in the legend
+ggsave("../imgs/guide_b-r.png", height = 3, width = 9)
+```
+
+### Reversing The Levels On The Graph
+```{r reverse-levels, message=F}
+## Reverse Levels
+dh.reverse <- reverse.levels(dh)
+
+## Red-Never, Blue-Always reversed
+plot(likert(dh.reverse), legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE)) #to reverse the order in the legend
+ggsave("../imgs/reverse_wrong.png", height = 3, width = 9)
+```
+
+
+### Changing The Ordering Of The Categorical Variables (Not Grouped)
+```{r reorder-not-group, message=F}
+## Reverse Levels
+dh.reverse <- reverse.levels(dh)
+
+plot(likert(dh.reverse), group.order=names(dh), legend.position="right") + #group.order changes the order of the variables
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE))
+ggsave("../imgs/reverse_right.png", height = 3, width = 9)
+```
+
+### Changing The Ordering Of The Categorical Variables (Grouped)
+```{r reorder-grouped, message=F}
+## Reorder Levels
+dental_hyg.reorder <- dental_hyg[,c(3,2,1,4)]
+
+## Normal Grouped Plot
+plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4]), plot.percent.low = FALSE, plot.percent.high = FALSE, plot.percent.neutral = FALSE, legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE))
+ggsave("../imgs/reorder_g1.png", height = 3, width = 9)
+
+## Reorderd Group Plot
+plot(likert(dental_hyg.reorder[,c(1:3)], grouping = dental_hyg.reorder[,4]), plot.percent.low = FALSE, plot.percent.high = FALSE, plot.percent.neutral = FALSE, legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE))
+ggsave("../imgs/reorder_g2.png", height = 3, width = 9)
+```
+
+
+
+### Changing The Ordering Of Grouping Within Facets (grouped data only)
+```{r}
+## Reverse Levels
+dental_hyg.reverse <- reverse.levels(dental_hyg)
+
+plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg.reverse[,4]), plot.percent.low = FALSE, plot.percent.high = FALSE, plot.percent.neutral = FALSE, legend.position="right") + #note grouping = dental_hyg.reverse
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE))
+ggsave("../imgs/reorder_g3.png", height = 3, width = 9)                            
+```
+
+### No center on diverge and 100% complete
+```{r}
+## No Center
+plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4]), plot.percent.low = FALSE, plot.percent.high = FALSE, plot.percent.neutral = FALSE, include.center=FALSE, legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE))
+ggsave("../imgs/no_center_diverge.png", height = 3, width = 9)
+
+## 100% Complete
+plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4]), plot.percent.low = FALSE, plot.percent.high = FALSE, plot.percent.neutral = FALSE, centered=FALSE, legend.position="right") +
+  scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
+  guides(fill = guide_legend(title="Responses", reverse = TRUE))
+ggsave("../imgs/diverge_no.png", height = 3, width = 9)
+```
+
+
+

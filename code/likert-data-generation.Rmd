@@ -20,17 +20,14 @@ floss <- c(rep("Never", 36), rep("Rarely", 26), rep("Sometimes", 6), rep("Often"
 age <- rep(c(rep("Child", 7), rep("Teen", 8), rep("Adult", 1)), length.out = 100)
 
 ## Fix factor levels
+mouth_wash <- factor(mouth_wash, c("Never", "Rarely", "Sometimes", "Often", "Always"))
+tooth_brush <- factor(tooth_brush, c("Never", "Rarely", "Sometimes", "Often", "Always"))
 floss <- factor(floss, c("Never", "Rarely", "Sometimes", "Often", "Always"))
 age <- factor(age, c("Child", "Teen", "Adult"))
 
 ## Create Data Set
 dental_hyg <- data.frame(mouth_wash, tooth_brush, floss, age)
 
-## Rename Cols
-dental_hyg  <- dental_hyg  %>% 
-  rename("How Often Respondents Use Mouth Wash" = mouth_wash,
-          "How Often Respondents Brush Their Teeth" = tooth_brush,
-          "How Often Respondents Use Floss" = floss)
 head(dental_hyg)
 ```
 

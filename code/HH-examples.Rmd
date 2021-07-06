@@ -1,0 +1,96 @@
+---
+title: "HH Package Examples"
+author: "Jake Chanenson"
+date: "7/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(foreign)      
+library(ggplot2)      
+library(colorspace)   #better colors for ggplot
+library(tidyverse)    
+library(dplyr)
+library(RColorBrewer)
+library(grid)
+library(HH) # for creating a likert plot
+```
+
+## Summary Data
+```{r}
+load(file = "../data/sample-likert-data.rda") #our data, see likert-data-generation.Rmd for more info
+head(cookie_data)
+```
+
+
+
+
+
+## Simple Example
+```{r simple-example}
+p1 <- likert(Item~., cookie_data, ReferenceZero=3,  ylab = "Question", main = "Cookie Data", auto.key = list(columns = 2, reverse.rows = T))
+
+p1 #show image
+
+## Save Image
+png("../imgs/HH_basic.png",
+     height=400, width=900)
+p1 
+dev.off()
+```
+
+## Piece Wise Proof of Concept
+```{r}
+likert(Item~Disagree+Neutral+Agree, cookie_data, main = "Less Levels")
+```
+
+## Color Example
+```{r color}
+display.brewer.pal(n=3,"RdYlBu")
+likert(Item~Disagree+Neutral+Agree, cookie_data, main = "Different Colors", sub = "Note The Smaller Range", col=brewer.pal(n=3,"RdYlBu"))
+```
+
+## Grouped Data
+```{r grouped}
+## Create New df with Groups
+type <- c("Chunky", "Chunky", "Smooth")
+new_cookie_data <- cbind(cookie_data, type)
+head(new_cookie_data)
+
+## Plot Data
+p2 <- likert(Item~. | type, new_cookie_data, ReferenceZero=3, main = "Cookie Data Grouped By Texture Of Cookie", layout=c(1,2), auto.key = list(columns = 2, reverse.rows = T),
+ scales=list(y=list(relation="free")), between=list(y=1), strip.left=TRUE, strip = FALSE,
+ par.strip.text=list(cex=1.1, lines=2), ylab="Question")
+
+p2 #show image
+
+## Save Image
+png("../imgs/HH_grouped.png",
+     height=400, width=900)
+p2 
+dev.off()
+```
+
+
+```{r}
+l2 <- likert(Qtype~., S4_Likert_Data %>% dplyr::select(-"<NA>"), ReferenceZero=3, ylab = "Question", main = "Have Student Expectations Been Met In CS Classes", as.percent=TRUE, auto.key = list(columns = 1, reverse.rows = T))
+png("../imgs/likert_expectation.png",
+width=1280, height=720)
+l2
+dev.off()
+
+l2
+```
+
+```{r}
+ls2.s8 <- likert(Qtype~.|Gender, S2.S8_Likertt, ReferenceZero=3, ylab = "Question", main = "Where Do Students Seek Support", as.percent=TRUE, auto.key = list(columns = 1, reverse.rows = T))
+png("../imgs/RQ2/likert_support_strat_prep.png",
+width=1920, height=1080)
+ls2.s8 
+dev.off()
+
+ls2.s8 
+```
+

@@ -1,5 +1,5 @@
 ---
-title: "likert Examples"
+title: "likert Package Examples"
 author: "Jake Chanenson"
 date: "5/20/2021"
 output: html_document
@@ -22,6 +22,7 @@ library(likert) # for creating a likert plot
 ## Usuing Long data
 ```{r}
 load(file = "../data/sample-likert-data.rda") #our data, see likert-data-generation.Rmd for more info
+head(dental_hyg)
 
 ## Rename Cols
 dental_hyg  <- dental_hyg  %>% 
@@ -43,23 +44,11 @@ ggsave("../imgs/long_data_grouped.png", height = 3, width = 9)
 
 ## Using Pre-Surmized Data
 ```{r}
-## Create df
-Item <- c("Oatmeal Raisin is The Best Type of Cookie", "Chocolate Chip is The Best Type of Cookie", "Snickerdoodle is The Best Type of Cookie")
-strong_disagree <- c(60, 20, 10)
-disagree <- c(7, 25, 47)
-neutral <- c(0,0,0)
-agree <- c(3, 15, 38)
-strong_agree  <- c(30, 40, 05)
-df <- data.frame(Item, strong_disagree, disagree, neutral, agree, strong_agree)
+## Load df
+load(file = "../data/sample-likert-data.rda") #our data, see likert-data-generation.Rmd for more info
+head(cookie_data)
 
-## Rename Cols (for legend)
-df <- df  %>% 
-  rename("Strong Disagree" = strong_disagree,
-          "Disagree" = disagree,
-          "Agree" = agree,
-         "Strong Agree" = strong_agree)
-
-plot(likert(summary = df), plot.percent.neutral=FALSE, legend.position="right")
+plot(likert(summary = cookie_data), plot.percent.neutral=FALSE, legend.position="right")
 ggsave("../imgs/ps_data.png", height = 3, width = 9)
 ```
 
@@ -150,7 +139,7 @@ ggsave("../imgs/reorder_g2.png", height = 3, width = 9)
 
 
 ### Changing The Ordering Of Grouping Within Facets (grouped data only)
-```{r}
+```{r Grouping-Within-Facets, message=F}
 ## Reverse Levels
 dental_hyg.reverse <- reverse.levels(dental_hyg)
 
@@ -161,7 +150,7 @@ ggsave("../imgs/reorder_g3.png", height = 3, width = 9)
 ```
 
 ### No center on diverge and 100% complete
-```{r}
+```{r no-center, message=F}
 ## No Center
 plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4]), plot.percent.low = FALSE, plot.percent.high = FALSE, plot.percent.neutral = FALSE, include.center=FALSE, legend.position="right") +
   scale_fill_manual(values = brewer.pal(n=5,"RdYlBu"), breaks = c("Never", "Rarely", "Sometimes", "Often", "Always")) +
@@ -174,6 +163,5 @@ plot(likert(dental_hyg[,c(1:3)], grouping = dental_hyg[,4]), plot.percent.low = 
   guides(fill = guide_legend(title="Responses", reverse = TRUE))
 ggsave("../imgs/diverge_no.png", height = 3, width = 9)
 ```
-
 
 

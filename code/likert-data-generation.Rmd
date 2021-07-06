@@ -36,10 +36,10 @@ head(dental_hyg)
 Item <- c("Oatmeal Raisin is The Best Type of Cookie", "Chocolate Chip is The Best Type of Cookie", "Snickerdoodle is The Best Type of Cookie")
 strong_disagree <- c(60, 20, 10)
 disagree <- c(7, 25, 47)
-neutral <- c(0,0,0)
+Neutral <- c(0,0,0)
 agree <- c(3, 15, 38)
 strong_agree  <- c(30, 40, 05)
-cookie_data <- data.frame(Item, strong_disagree, disagree, neutral, agree, strong_agree)
+cookie_data <- data.frame(Item, strong_disagree, disagree, Neutral, agree, strong_agree)
 
 ## Rename Cols (for legend)
 cookie_data <- cookie_data  %>% 

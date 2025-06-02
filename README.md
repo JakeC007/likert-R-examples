@@ -5,13 +5,9 @@ For best viewing check out the [PDF here!](https://jakec007.github.io/assets/fil
 
 
 
-See the June 2025 update blog post.
-
-
-
 ### Get The Sample Code Working With `renv`
 
-This project (now, as of 6 1, 2025) uses [`renv`](https://rstudio.github.io/renv/) to ensure package versions are reproducible.
+This project (now, as of June 2025) uses [`renv`](https://rstudio.github.io/renv/) to ensure package versions are reproducible.
 
 To restore the required R packages 
 
